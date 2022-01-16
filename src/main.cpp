@@ -1,33 +1,35 @@
+// Distributed Energetic Light Transmission Aparatus
+#define FASTLED_ALLOW_INTERRUPTS 0
+
 #include <Arduino.h>
-
 #include "Panel.h"
-#include "RunPattern.h"
-
-static constexpr uint8_t BRIGHTNESS = 15;
+#include "Palattes.h"
+#include "TextOverlay.h"
+#include "Patterns.h"
+//#include "Networking.h"
 
 void setup() {
-    pinMode(5, OUTPUT);
-//    delay(3000); // power-up safety delay
-
+    pinMode(SWITCH_PIN, OUTPUT);
     Serial.begin(115200);
-    digitalWrite(5, HIGH);
-    delay(100);
-    LEDS::strip.Begin();
-    LEDS::strip.SetBrightness(BRIGHTNESS);
-    LEDS::set_all(HsbColor(0, 0, 0));
-    LEDS::strip.SetPixelColor(1, Rgb16Color(100, 0, 100));
-    LEDS::strip.Show();
+    Serial.println("Starting...");
+//    networkSetup();
+    digitalWrite(SWITCH_PIN, HIGH);
+    delay(50); // power-up safety delay
+    randomSeed(analogRead(5));
 
+    CFastLED::addLeds<WS2812, 3, GRB>(final_leds, OVERFLOW_PIXEL).setCorrection(CORRECTION);
+    FastLED.setBrightness(28);
+    fill_solid(p_leds, NUM_LEDS, CRGB::Black);
+    FastLED.show();
+
+    Patterns::set(Patterns::FIREPLACE);
+    setup_text();
 }
 
 void loop() {
-//    delay(3000);
-//    LEDS::set_all(HsbColor(0, 0, 0));
-
-//    for (int i = 0; i < 481; ++i) {
-//        LEDS::strip.SetPixelColor(i, HsbColor(0.3, 1, 1));
-//        LEDS::strip.SetPixelColor(i - 1, HsbColor(0.3, 1, 0));
-//        LEDS::strip.Show();
-//    }
-    RunPattern::tick();
+//    blend(&p_leds[0], matrix[0], &final_leds[0], NUM_LEDS, 127);
+    Patterns::tick();
+//    run_text();
+    memcpy(&final_leds, &p_leds, sizeof(CRGB) * NUM_LEDS);
+    FastLED.show();
 }

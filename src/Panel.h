@@ -1,25 +1,38 @@
 #pragma once
 
-#include <NeoPixelBrightnessBus.h>
+#define FASTLED_ESP8266_RAW_PIN_ORDER
+#define FASTLED_ESP8266_DMA
 
-#define CHIPSET WS2812
-#define CORRECTION 0xFFB0F0
+#include <FastLED.h>
 
-class LEDS {
-public:
-    static constexpr unsigned short COUNT = 480;
+constexpr uint32_t CORRECTION = 0xFFB0F0;
+constexpr byte SWITCH_PIN = 5;
+constexpr uint16_t NUM_LEDS = 480;
+constexpr uint16_t OVERFLOW_PIXEL = 481;
+constexpr uint16_t WIDTH = 30;
+constexpr uint16_t HEIGHT = 15;
+constexpr uint16_t CENTER_X = WIDTH / 2;
+constexpr uint16_t CENTER_Y = HEIGHT / 2;
+constexpr uint8_t BRIGHTNESS = 30;
 
-    static NeoPixelBrightnessBus<NeoGrbFeature, Neo800KbpsMethod> strip;
+inline CRGB p_leds[NUM_LEDS];
+inline CRGB final_leds[NUM_LEDS];
 
-public:
-    static int XY(uint16_t x, uint16_t y);
+// Could be syntactically improved with templates
+uint16_t XY(uint8_t x, uint8_t y) {
+    // 7 - y because we count from top and the panels start from bottom left
+    // x * 8 because there are 8 columns in the matrix
+    // Last part wraps around to second row if y is on second row
+    if (x > 29) return OVERFLOW_PIXEL;
+    if (y > 14) return OVERFLOW_PIXEL;
+    return (7 - y) + (x * 8) + ((y > 7) * 248);
+}
 
-    static void set(byte x, byte y, HsbColor hsbColor);
-
-    static void set_all(HsbColor hsbColor);
-
-    static void show();
-
-//    static void show();
-};
-
+uint16_t XY16(uint16_t x, uint16_t y) {
+    // 7 - y because we count from top and the panels start from bottom left
+    // x * 8 because there are 8 columns in the matrix
+    // Last part wraps around to second row if y is on second row
+    if (x > 29) return OVERFLOW_PIXEL;
+    if (y > 14) return OVERFLOW_PIXEL;
+    return (7 - y) + (x * 8) + ((y > 7) * 248);
+}
