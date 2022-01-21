@@ -422,60 +422,41 @@ void AssortedNoise::run() {
             mode = 0;
     }
     switch (mode) {
-        case 0:
-            LavaLampRainbow();
+        case 0:LavaLampRainbow();
             break;
-        case 1:
-            LavaLampRainbowStripe();
+        case 1:LavaLampRainbowStripe();
             break;
-        case 2:
-            Party();
+        case 2:Party();
             break;
-        case 3:
-            Forest();
+        case 3:Forest();
             break;
-        case 4:
-            Cloud();
+        case 4:Cloud();
             break;
-        case 5:
-            Fire();
+        case 5:Fire();
             break;
-        case 6:
-            FireNoise();
+        case 6:FireNoise();
             break;
-        case 7:
-            Lava();
+        case 7:Lava();
             break;
-        case 8:
-            Ocean();
+        case 8:Ocean();
             break;
-        case 9:
-            BlackAndWhite();
+        case 9:BlackAndWhite();
             break;
-        case 10:
-            BlackAndBlue();
+        case 10:BlackAndBlue();
             break;
-        case 11:
-            Temperature();
+        case 11:Temperature();
             break;
-        case 12:
-            Spectrum();
+        case 12:Spectrum();
             break;
-        case 13:
-            OceanBreeze();
+        case 13:OceanBreeze();
             break;
-        case 14:
-            DeepSea();
+        case 14:DeepSea();
             break;
-        case 15:
-            Aurora();
+        case 15:Aurora();
             break;
-        case 16:
-            Shikon();
+        case 16:Shikon();
             break;
-        case 17:
-            ColorCube();
+        case 17:ColorCube();
             break;
-    }
-    ;
+    };
 }

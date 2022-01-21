@@ -15,7 +15,8 @@ constexpr uint16_t CENTER_X = WIDTH / 2;
 constexpr uint16_t CENTER_Y = HEIGHT / 2;
 constexpr uint8_t BRIGHTNESS = 30;
 
-inline CRGB p_leds[NUM_LEDS];
+inline CRGB p_leds[NUM_LEDS]; // Pattern LEDs
+inline CRGB t_leds[NUM_LEDS]; // DText LEDs
 inline CRGB final_leds[NUM_LEDS];
 
 // Could be syntactically improved with templates
