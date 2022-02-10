@@ -6,7 +6,8 @@
 #include <FastLED.h>
 
 constexpr uint32_t CORRECTION = 0xFFB0F0;
-constexpr byte SWITCH_PIN = 5;
+constexpr byte SWITCH_PIN = 18;
+constexpr byte LED_PIN = 4;
 constexpr uint16_t NUM_LEDS = 480;
 constexpr uint16_t OVERFLOW_PIXEL = 481;
 constexpr uint16_t WIDTH = 30;

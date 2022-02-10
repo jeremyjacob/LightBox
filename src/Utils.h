@@ -21,8 +21,13 @@ struct Utils {
     }
 
     static void mirror() {
-        for (int x = 0; x > CENTER_X; ++x) {
+        for (int x = 0; x < CENTER_X; ++x) {
             for (int y = 0; y < HEIGHT; ++y) {
+//                Serial.print("mirring: ");
+//                Serial.print(x);
+//                Serial.print(" ");
+//                Serial.println(y);
+
                 p_leds[XY(WIDTH - x, y)] = p_leds[XY(x, y)];
             }
         }

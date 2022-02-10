@@ -4,21 +4,21 @@
 
 class Spirits {
 public:
-    void run();
+    void run() const;
 
     float speed = 0.5;
 private:
     uint8_t kBorderWidth = 0;
 };
 
-void Spirits::run() {
+void Spirits::run() const {
     uint8_t blurAmount = dim8_raw(beatsin8(3, 64, 192));
     blur2d(p_leds, WIDTH, HEIGHT, blurAmount);
 
     // Use two out-of-sync sine waves
-    uint8_t i = beatsin8(91 * speed, kBorderWidth, CENTER_X - kBorderWidth);
-    uint8_t j = beatsin8(109 * speed, kBorderWidth, CENTER_X - kBorderWidth);
-    uint8_t k = beatsin8(73 * speed, kBorderWidth, CENTER_X - kBorderWidth);
+    uint8_t i = beatsin8(91 * speed, kBorderWidth, CENTER_X - kBorderWidth, 0, 0);
+    uint8_t j = beatsin8(109 * speed, kBorderWidth, CENTER_X - kBorderWidth, 0, 0);
+    uint8_t k = beatsin8(73 * speed, kBorderWidth, CENTER_X - kBorderWidth, 0, 0);
 
     // The color of each point shifts over time, each at a different speed.
     uint16_t ms = millis();

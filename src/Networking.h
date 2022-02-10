@@ -1,39 +1,45 @@
 #pragma once
 
-#include <ESP8266WiFi.h>
+#include <WiFi.h>
 #include <ESPAsyncWebServer.h>
+#include <asyncHTTPrequest.h>
 
-const char *ssid = "Buick";
-const char *password = "poppyandpippin!";
+namespace Network {
+    const char *ssid = "Buick";
+    const char *password = "poppyandpippin!";
 
-AsyncWebServer server(80);
-AsyncWebSocket ws("/");
+    AsyncWebServer server(80);
+    AsyncWebSocket ws("/");
+    asyncHTTPrequest request;
 
-void onWsEvent(AsyncWebSocket *_server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data,
-               size_t len) {
+//    WiFiClientSecure client;
 
-    if (type == WS_EVT_CONNECT) {
-        Serial.println("Websocket client connection received");
-        client->text("Greetings");
+    void
+    onWsEvent(AsyncWebSocket *_server, AsyncWebSocketClient *socketClient, AwsEventType type, void *arg, uint8_t *data,
+              size_t len) {
 
-    } else if (type == WS_EVT_DISCONNECT) {
-        Serial.println("Client disconnected");
-    }
-}
+        if (type == WS_EVT_CONNECT) {
+            Serial.println("Websocket socketClient connection received");
+            socketClient->text("Greetings");
 
-void networkSetup() {
-    WiFi.begin(ssid, password);
-
-    while (WiFi.status() != WL_CONNECTED) {
-        delay(500);
-        Serial.print("Connecting to WiFi: ");
-        Serial.println(WiFi.status());
+        } else if (type == WS_EVT_DISCONNECT) {
+            Serial.println("Client disconnected");
+        }
     }
 
-    Serial.println(WiFi.localIP());
+    void setup() {
+        WiFi.begin(ssid, password);
+//        client.setInsecure(); // TODO: Remove this line and implement real cert verification
+        while (WiFi.status() != WL_CONNECTED) {
+            delay(500);
+            Serial.print("Connecting to WiFi: ");
+            Serial.println(WiFi.status());
+        }
 
-    ws.onEvent(onWsEvent);
-    server.addHandler(&ws);
-    server.begin();
-//    WiFiClient
+        Serial.println(WiFi.localIP());
+
+//        ws.onEvent(onWsEvent);
+//        server.addHandler(&ws);
+//        server.begin();
+    }
 }
