@@ -4,14 +4,12 @@
 #include "Panel.h"
 #include "Utils.h"
 
-#define LIVING_LAYERS 1
-
 class Living {
 public:
     void run();
 
 public:
-    uint8_t speed = 18;
+    uint8_t speed = 1;
 
 private:
     uint32_t x{};
@@ -40,9 +38,9 @@ void Living::run() {
 //as shown on youtube
 //a noise controlled & modulated by itself
 void Living::noise_noise1() {
-
+    
     CRGBPalette16 Pal(pit);
-
+    
     //modulate the position so that it increases/decreases x
     //(here based on the top left pixel - it could be any position else)
     //the factor "2" defines the max speed of the x movement
@@ -51,7 +49,7 @@ void Living::noise_noise1() {
     //modulate the position so that it increases/decreases y
     //(here based on the top right pixel - it could be any position else)
     y = y + (speed * noise[WIDTH - 1][0]) - 255;
-    //z just in one directio n but with the additional "1" to make sure to never get stuck
+    //z just in one direction but with the additional "1" to make sure to never get stuck
     //in case the movement is stopped by a crazy parameter (noise data) combination
     //(here based on the down left pixel - it could be any position else)
     z += 1 + ((noise[0][HEIGHT - 1]) / 4);
@@ -59,7 +57,7 @@ void Living::noise_noise1() {
     //here you can set the range of the zoom in both dimensions
     scale_x = 8000 + (noise[0][CENTER_Y] * 16);
     scale_y = 8000 + (noise[WIDTH - 1][CENTER_Y] * 16);
-
+    
     //calculate the noise data
     for (auto &i: noise) {
         uint32_t ioffset = scale_x * *(i - CENTER_X);
@@ -77,24 +75,22 @@ void Living::noise_noise1() {
             j = data;
         }
     }
-
+    
     //map the colors
-    for (uint8_t y = 0; y < HEIGHT; y++) {
-        for (uint8_t x = 0; x < WIDTH; x++) {
+    for (uint8_t iy = 0; iy < HEIGHT; iy++) {
+        for (uint8_t ix = 0; ix < WIDTH; ix++) {
             //I will add this overlay CRGB later for more colors
-            //it´s basically a rainbow mapping with an inverted brightness mask
-            CRGB overlay = CHSV(noise[y][x], 255, noise[x][y]);
+//            it´s basically a rainbow mapping with an inverted brightness mask
+            CRGB overlay = CHSV(noise[iy][ix], 255, noise[ix][iy]);
             //here the actual colormapping happens - note the additional colorshift caused by the down right pixel noise[0][15][15]
-            p_leds[XY(x, y)] = ColorFromPalette(Pal, noise[WIDTH - 1][HEIGHT - 1] + noise[x][y]) + overlay;
+            p_leds[XY(ix, iy)] = ColorFromPalette(Pal, noise[WIDTH - 1][HEIGHT - 1] + noise[ix][iy]) + overlay;
         }
     }
-
+    
     //make it looking nice
 //    Utils::adjust_gamma();
-
+    
     //mirror it!
 //    Utils::mirror();
-
-    //and show it!
 }
 

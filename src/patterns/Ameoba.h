@@ -10,19 +10,20 @@
 class Ameoba {
 public:
     Ameoba();
-
+    
     void run();
 
 public:
-    int speed = 17;
+    const int i_speed = 17;
+    int speed = i_speed;
 
 private:
     void noise_noise2();
-
+    
     [[nodiscard]] CRGB shifting_colors(uint8_t value, bool inverse) const;
-
+    
     [[maybe_unused]] void show_palette();
-
+    
     void setup_tables();
 
 private:
@@ -46,6 +47,12 @@ private:
 Ameoba::Ameoba() {
     setup_tables();
 //    FastLED.setDither(DISABLE_DITHER);
+    
+    State::registerWatch([this](const ArduinoJson6192_70::DynamicJsonDocument &doc) -> void {
+        Serial.println("Updating Ameoaba");
+        float f_speed = doc["patterns"]["Ameoba"]["speed"];
+        this->speed = this->i_speed * f_speed;
+    });
 }
 
 void Ameoba::run() {
@@ -69,20 +76,20 @@ void Ameoba::setup_tables() {
 
 // check the "palette"
 [[maybe_unused]] void Ameoba::show_palette() {
-
+    
     for (uint8_t _y = 0; _y < HEIGHT; _y++) {
         for (uint8_t _x = 0; _x < HEIGHT; _x++) {
             p_leds[XY(_x, _y)] = CRGB(a[((_x * 16) + _y) * 4], b[((_x * 16) + _y) * 4], c[((_x * 16) + _y) * 4]);
         }
     }
-    Utils::adjust_gamma();
-    ;
+    Utils::adjust_gamma();;
 }
 
 
 CRGB Ameoba::shifting_colors(uint8_t value, bool inverse) const {
     const uint16_t interval = 100000 / speed;
-    uint8_t offset = millis() / (interval / 25);
+    const uint8_t v = (interval / 25) ? (interval / 25) : 1;
+    uint8_t offset = millis() / v;
     uint32_t ms = millis() % interval;
     uint16_t mapped = map(ms, 0, interval, 0, 255);
     CRGB rgb = CRGB(value, 0, 0);
@@ -116,13 +123,13 @@ void Ameoba::noise_noise2() {
              noise[0][WIDTH - 1][CENTER_Y + 1] +
              noise[0][WIDTH - 2][CENTER_Y + 1]) / speed;
     ctrl[5] = (ctrl[5] + ctrl[0] + ctrl[1]) / 11;
-
+    
     x[0] = x[0] + (ctrl[0] * 2) - 127;
     y[0] = y[0] + (ctrl[1] * 2) - 127;
     z[0] += 1 + (ctrl[2] / 4);
     scale_x[0] = 8000 + (ctrl[3] * 16);
     scale_y[0] = 8000 + (ctrl[4] * 16);
-
+    
     //calculate the noise data
     uint8_t layer = 0;
     for (uint8_t i = 0; i < WIDTH; i++) {
@@ -137,7 +144,7 @@ void Ameoba::noise_noise2() {
             noise[layer][i][j] = (noise[layer][i][j] + data) / 2;
         }
     }
-
+    
     //map the colors
     //here the red layer
     for (uint8_t _y = 0; _y < HEIGHT; _y++) {
@@ -146,7 +153,7 @@ void Ameoba::noise_noise2() {
             buffer1[XY(_x, _y)] = shifting_colors(a[i], true);
         }
     }
-
+    
     // LAYER TWO
     //top left
     ctrl[0] = (ctrl[0] + noise[1][0][0] + noise[1][1][0] + noise[1][0][1] + noise[1][1][1]) / 20;
@@ -165,13 +172,13 @@ void Ameoba::noise_noise2() {
              noise[1][WIDTH - 1][CENTER_Y + 1] +
              noise[1][WIDTH - 2][CENTER_Y + 1]) / 20;
     ctrl[5] = (ctrl[5] + ctrl[0] + ctrl[1]) / 12;
-
+    
     x[1] = x[1] + (ctrl[0]) - 127;
     y[1] = y[1] + (ctrl[1]) - 127;
     z[1] += 1 + (ctrl[2] / 4);
     scale_x[1] = 8000 + (ctrl[3] * 16);
     scale_y[1] = 8000 + (ctrl[4] * 16);
-
+    
     //calculate the noise data
     layer = 1;
     for (uint8_t i = 0; i < WIDTH; i++) {
@@ -186,7 +193,7 @@ void Ameoba::noise_noise2() {
             noise[layer][i][j] = (noise[layer][i][j] + data) / 2;
         }
     }
-
+    
     //map the colors
     //here the blue layer
     for (uint8_t _y = 0; _y < HEIGHT; _y++) {
@@ -195,7 +202,7 @@ void Ameoba::noise_noise2() {
             buffer2[XY(_x, _y)] = shifting_colors(a[i], false);
         }
     }
-
+    
     // blend
     //for (uint16_t i = 0; i < NUM_LEDS; i++) {p_leds[i] = buffer1[i] + buffer2[i];}
     for (uint8_t _y = 0; _y < HEIGHT; _y++) {
@@ -205,10 +212,7 @@ void Ameoba::noise_noise2() {
             p_leds[XY(_x, _y)] = buffer1[XY(_x, _y)] + buffer2[XY(_x, _y)];
         }
     }
-
+    
     //make it looking nice
     Utils::adjust_gamma();
-
-    //and show it!
-    ;
 }

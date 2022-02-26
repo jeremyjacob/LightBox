@@ -1,8 +1,13 @@
 #pragma once
 
-#include "Panel.h"
-
 struct Utils {
+    static void fill(CRGB *where, CRGB color) {
+        // auto loop where
+        for (auto i = 0; i < NUM_LEDS; i++) {
+            where[i] = color;
+        }
+    }
+    
     // cheap correction with gamma 2.0
     static void adjust_gamma() {
         // minimal brightness you want to allow
@@ -13,13 +18,13 @@ struct Utils {
             led.r = dim8_video(led.r);
             led.g = dim8_video(led.g);
             led.b = dim8_video(led.b);
-
+            
             if (led.r < min) led.r = min;
             if (led.g < min) led.g = min;
             if (led.b < min) led.b = min;
         }
     }
-
+    
     static void mirror() {
         for (int x = 0; x < CENTER_X; ++x) {
             for (int y = 0; y < HEIGHT; ++y) {
@@ -27,12 +32,12 @@ struct Utils {
 //                Serial.print(x);
 //                Serial.print(" ");
 //                Serial.println(y);
-
+                
                 p_leds[XY(WIDTH - x, y)] = p_leds[XY(x, y)];
             }
         }
     }
-
+    
     static void rmirror() {
         for (int x = WIDTH; x > CENTER_X; --x) {
             for (int y = 0; y < HEIGHT; ++y) {

@@ -12,5 +12,4 @@ public:
 
 void SolidColor::run() {
     fill_solid(p_leds, NUM_LEDS, CRGB::Blue);
-    ;
 }

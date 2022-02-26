@@ -2,19 +2,20 @@
 
 class BlockPuzzle {
 public:
+    BlockPuzzle();
     void run();
 
-public:
-    uint16_t delay = 250;
-
 private:
-    float speed_move = 0.5;
-
-    void drawPixelXYF(float x, float y, const CRGB &color);
-
+    const uint16_t idelay = 250;
+    const float ispeed_move = 0.5;
+    uint16_t delay = idelay;
+    float speed_move = ispeed_move;
+    
+    static void drawPixelXYF(float x, float y, const CRGB &color);
+    
     static void draw_square(byte x1, byte y1, byte x2, byte y2, byte col);
-
-    void draw_squareF(float x1, float y1, float x2, float y2, byte col);
+    
+    static void draw_squareF(float x1, float y1, float x2, float y2, byte col);
 
 private:
     static const uint8_t PSizeX = 4;
@@ -25,7 +26,7 @@ private:
     static const bool Ra = (HEIGHT % PSizeY) ? true : false;
     static constexpr int PCols = Ecols + Ca;
     static constexpr int PRows = Erows + Ra;
-
+    
     byte puzzle[PCols][PRows];
     byte tmpp;
     byte z_dot[2];
@@ -39,23 +40,22 @@ private:
 void BlockPuzzle::run() {
     if (setup) {
         etap = 0;
-        for (byte x = 0; x < PCols; x++) {
-            for (byte y = 0; y < PRows; y++) { puzzle[x][y] = random8(16, 255); }
+        for (auto &x: puzzle) {
+            for (uint8_t &y: x) { y = random8(16, 255); }
         }
         z_dot[0] = random(0, PCols);
         z_dot[1] = random(0, PRows);
         puzzle[z_dot[0]][z_dot[1]] = 0;
         setup = false;
     }
-
+    
     for (byte x = 0; x < PCols; x++) {
         for (byte y = 0; y < PRows; y++) {
             draw_square(x * PSizeX, y * PSizeY, (x + 1) * PSizeX, (y + 1) * PSizeY, puzzle[x][y]);
         }
     }
     switch (etap) {
-        case 0:
-            FastLED.delay(delay);
+        case 0:FastLED.delay(delay);
             XorY = !XorY;
             if (XorY) {
                 if (z_dot[0] == PCols - 1)
@@ -71,8 +71,7 @@ void BlockPuzzle::run() {
             move[(XorY) ? 1 : 0] = 0;
             etap = 1;
             break;
-        case 1:
-            tmpp = puzzle[z_dot[0] + move[0]][z_dot[1] + move[1]];
+        case 1:tmpp = puzzle[z_dot[0] + move[0]][z_dot[1] + move[1]];
             puzzle[z_dot[0] + move[0]][z_dot[1] + move[1]] = 0;
             etap = 2;
             break;
@@ -89,8 +88,7 @@ void BlockPuzzle::run() {
                 etap = 3;
             }
             break;
-        case 3:
-            z_dot[0] += move[0];
+        case 3:z_dot[0] += move[0];
             z_dot[1] += move[1];
             etap = 0;
             break;
@@ -143,4 +141,12 @@ void BlockPuzzle::draw_squareF(float x1, float y1, float x2, float y2, byte col)
             else drawPixelXYF(x1 + x, y1 + y, ColorFromPalette(RainbowColors_p, col));
         }
     }
+}
+
+BlockPuzzle::BlockPuzzle() {
+    State::registerWatch([this](const DynamicJsonDocument &doc) -> void {
+        const float speed_coef = doc["patterns"]["BlockPuzzle"]["speed"];
+        this->speed_move = ispeed_move * speed_coef;
+        this->delay = idelay * speed_coef;
+    });
 }

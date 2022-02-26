@@ -1,0 +1,5 @@
+WS send mesage to all clients
+WS ping and pong
+Send new clients current settings
+Spotify integration
+Albuma art pallate?

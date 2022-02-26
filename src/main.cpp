@@ -1,31 +1,39 @@
 // Distributed Energetic Light Transmission Apparatus
+#pragma GCC diagnostic ignored "-Wregister"
 #define FASTLED_ALLOW_INTERRUPTS 0
 
 #include <Arduino.h>
-//#include "Networking.h"
+#include <LITTLEFS.h>
+#include "State.h"
 //#include "Spotify.h"
 #include "Panel.h"
 #include "Palattes.h"
 #include "Patterns.h"
-#include "Text.h"
+#include "TextManager.h"
+#include "Networking.h"
 
 void setup() {
     pinMode(SWITCH_PIN, OUTPUT);
     Serial.begin(115200);
     Serial.println("Starting...");
+    if (!LITTLEFS.begin()) Serial.println("Error mounting LittleFS");
 //    delay(1000);
-//    Network::setup();
+    Network::setup();
     digitalWrite(SWITCH_PIN, HIGH);
     delay(50); // power-up safety delay
     randomSeed(analogRead(34));
-
+    
     CFastLED::addLeds<WS2812, LED_PIN, GRB>(final_leds, OVERFLOW_PIXEL).setCorrection(CORRECTION);
     FastLED.setBrightness(28);
     fill_solid(p_leds, NUM_LEDS, CRGB::Black);
     FastLED.show();
-
-    Patterns::set(Patterns::PLASM);
-//    Text::set_font(FONTS::VISITOR_TT1);
+    
+    Serial.println("Started");
+    State::setup();
+    Patterns::set(State::config.pattern);
+//    TextManager::add();
+//    TextManager::objects[0].set_text("Hello");
+//    Text::set_font(FONT::VISITOR_TT1);
 //    Text::set_text("Flame");
 //    Text::set_color(CRGB::OrangeRed);
 //    Text::cursor_y = 2;
@@ -46,10 +54,12 @@ void show() {
 }
 
 void loop() {
-//    EVERY_N_SECONDS(5) {
+    EVERY_N_SECONDS(1) {
 //        Spotify::tick();
-//    }
-
+//        Network::
+    }
+    Network::ws.cleanupClients();
     Patterns::tick();
+    TextManager::render();
     show();
 }
