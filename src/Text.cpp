@@ -1,6 +1,8 @@
 #include "Text.h"
 
-void TextObject::set_font(FONT new_font_name) {
+#include <utility>
+
+void TextObject::setFont(FONT new_font_name) {
     font_name = new_font_name;
     switch (new_font_name) {
         case ADVOCUT: //
@@ -92,7 +94,7 @@ void TextObject::set_font(FONT new_font_name) {
     }
 }
 
-void TextObject::type_blank(byte width) {
+void TextObject::typeBlank(byte width) {
     for (int w = 0; w < width; ++w) {
         for (int row = 0; row < font.height; row++) {
             uint16_t led_pos = XY(cursor_x, row + cursor_y);
@@ -102,7 +104,7 @@ void TextObject::type_blank(byte width) {
     }
 }
 
-void TextObject::type_character(byte font_pos) {
+void TextObject::typeCharacter(byte font_pos) {
     uint16_t start_bit = font.offsets[font_pos]; //first bit of character
     uint16_t endBit = font.offsets[font_pos + 1]; //start of next char (or dummy char at end)
     
@@ -124,78 +126,37 @@ void TextObject::type_character(byte font_pos) {
     }
 }
 
-void TextObject::set_text(const char *str, const size_t len) {
-    message.assign(str, len);
-}
-
-void TextObject::set_text(const char *str) {
-    message = str;
-}
-
-void TextObject::set_color(CRGB new_color) {
-    text_color = new_color;
-}
-
 void TextObject::clear() {
     cursor_x = 0;
     memset(t_leds, 0, sizeof(t_leds));
 }
 
-void TextObject::type_message() {
+void TextObject::typeMessage() {
     cursor_x = start_x;
     cursor_y = start_y;
-    for (char letterPos: message) {
+    for (char letterPos: body) {
         
         //use ascii charcode to index font information starting with 33 = first printable char
         int font_pos = int(letterPos) - 33;
         //draw space or letter
         if (font_pos == -1) {
             //it's a space
-            type_blank(SPACE_WIDTH);
+            typeBlank(SPACE_WIDTH);
         } else {
             //it's a printable character. draw it
-            type_character(font_pos);
+            typeCharacter(font_pos);
         }
-        type_blank(1);
+        typeBlank(1);
     }
 }
 
-FONT TextObject::get_font() {
+FONT TextObject::getFont() {
     return VISITOR_TT2;
 }
 
-void TextObject::set_x(uint16_t new_x) {
-    start_x = new_x;
-}
-
-uint16_t TextObject::get_x() const {
-    return start_x;
-}
-
-void TextObject::set_y(uint16_t new_y) {
-    start_y = new_y;
-}
-
-uint16_t TextObject::get_y() const {
-    return start_y;
-}
-
-CRGB TextObject::get_color() {
-    return text_color;
-}
-
-const char *TextObject::get_text() {
-    return message.c_str();
-}
-
-bool TextObject::get_enabled() {
-    return enabled;
-}
-
-void TextObject::set_enabled(boolean) {
-    enabled = true;
-}
-
-TextObject::TextObject() {
-    set_font(font_name);
+TextObject::TextObject(bool enabled, FONT fontName, uint16_t startX, uint16_t startY,
+                       std::string body, const CRGB &textColor, const TextTypes type) :
+        enabled(enabled), font_name(fontName), start_x(startX), start_y(startY),
+        body(std::move(body)), text_color(textColor), type(type) {
+    setFont(font_name);
 }

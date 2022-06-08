@@ -1,0 +1,15 @@
+#pragma once
+
+#include "Panel.h"
+
+class SolidColor {
+public:
+    void run();
+    static constexpr const char *NAME = "Solid Color";
+private:
+    CRGB color = CRGB::Indigo;
+};
+
+void SolidColor::run() {
+    fill_solid(p_leds, NUM_LEDS, color);
+}

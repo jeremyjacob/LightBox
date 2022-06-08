@@ -5,6 +5,7 @@
 class FireRings {
 public:
     void run();
+    static constexpr const char *NAME = "Fire Rings";
 };
 
 void FireRings::run() {
@@ -28,6 +29,5 @@ void FireRings::run() {
             p_leds[XY(x, y)] = ColorFromPalette(LavaColors_p, col, bri);
         }
     }
-    blur2d(p_leds, WIDTH, HEIGHT, 20);
-    ;
+    blur2d(p_leds, WIDTH, HEIGHT, 20);;
 }

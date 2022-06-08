@@ -2,14 +2,12 @@
 
 class BlockPuzzle {
 public:
-    BlockPuzzle();
     void run();
+    static constexpr const char *NAME = "Block Puzzle";
 
 private:
-    const uint16_t idelay = 250;
+    const uint16_t delay = 250;
     const float ispeed_move = 0.5;
-    uint16_t delay = idelay;
-    float speed_move = ispeed_move;
     
     static void drawPixelXYF(float x, float y, const CRGB &color);
     
@@ -27,13 +25,13 @@ private:
     static constexpr int PCols = Ecols + Ca;
     static constexpr int PRows = Erows + Ra;
     
-    byte puzzle[PCols][PRows];
-    byte tmpp;
-    byte z_dot[2];
-    byte etap;
-    int8_t move[2];
+    byte puzzle[PCols][PRows]{};
+    byte tmpp{};
+    byte z_dot[2]{};
+    byte etap{};
+    int8_t move[2]{};
     float shift[2] = {0, 0};
-    bool XorY;
+    bool XorY{};
     bool setup = true;
 };
 
@@ -79,8 +77,8 @@ void BlockPuzzle::run() {
             draw_squareF(((z_dot[0] + move[0]) * PSizeX) + shift[0], ((z_dot[1] + move[1]) * PSizeY) + shift[1],
                          ((z_dot[0] + move[0] + 1) * PSizeX) + shift[0], (z_dot[1] + move[1] + 1) * PSizeY + shift[1],
                          tmpp);
-            shift[0] -= (move[0] * speed_move);
-            shift[1] -= (move[1] * speed_move);
+            shift[0] -= (move[0] * ispeed_move * State::speed);
+            shift[1] -= (move[1] * ispeed_move * State::speed);
             if ((fabs(shift[0]) >= WIDTH / PCols) || (fabs(shift[1]) >= HEIGHT / PRows)) {
                 shift[0] = 0;
                 shift[1] = 0;
@@ -141,12 +139,4 @@ void BlockPuzzle::draw_squareF(float x1, float y1, float x2, float y2, byte col)
             else drawPixelXYF(x1 + x, y1 + y, ColorFromPalette(RainbowColors_p, col));
         }
     }
-}
-
-BlockPuzzle::BlockPuzzle() {
-    State::registerWatch([this](const DynamicJsonDocument &doc) -> void {
-        const float speed_coef = doc["patterns"]["BlockPuzzle"]["speed"];
-        this->speed_move = ispeed_move * speed_coef;
-        this->delay = idelay * speed_coef;
-    });
 }

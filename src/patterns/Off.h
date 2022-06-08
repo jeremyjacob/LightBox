@@ -5,7 +5,7 @@
 class Off {
 public:
     void run();
-
+    static constexpr const char *NAME = "Off";
 public:
     Off() = default;
 };

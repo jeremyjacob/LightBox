@@ -5,11 +5,14 @@
 class Galaxy {
 public:
     void run();
+    static constexpr const char *NAME = "Galaxy";
+private:
 };
 
 void Galaxy::run() {
     fadeToBlackBy(p_leds, NUM_LEDS, 32);
     double t = (float) (millis()) / 128;
+    t *= State::speed;
     for (byte i = 0; i < 8; i++) {
         for (byte j = 0; j < 4; j++) {
             p_leds[XY(beatsin8(10, (j * 2), WIDTH - 1 - (j * 2), 0, ((j % 2) ? 128 : 0) + t * (i + j)),

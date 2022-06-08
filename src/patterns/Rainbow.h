@@ -5,7 +5,7 @@
 class Rainbow {
 public:
     void run();
-
+    static constexpr const char *NAME = "Rainbow";
 private:
     uint16_t _plasmaShift = (random8(0, 5) * 32) + 64;
     uint16_t _plasmaTime = 0;

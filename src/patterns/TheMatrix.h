@@ -6,8 +6,7 @@
 
 class TheMatrix {
 public:
-    TheMatrix() {};
-
+    static constexpr const char *NAME = "The Matrix";
     void run();
 
 private:
@@ -26,7 +25,7 @@ private:
 void TheMatrix::run() {
     // Fade deals with 'tails'
     fadeToBlackBy(p_leds, NUM_LEDS, 10);
-
+    
     if (millis() - previousTime >= 75) {
         // Spawn new vertical blob
         if (random8(blobRate) == 0) {
@@ -34,18 +33,18 @@ void TheMatrix::run() {
             blob[blobCounter] = {spawnX, 0, false};
             blobCounter = (blobCounter + 1) % BLOB_COUNT;
         }
-
+        
         // Draw the blobs
         for (auto &i: blob) {
             p_leds[XY(i._x, i._y - 1)] = CRGB(0, 255, 0);
             p_leds[XY(i._x, i._y)] = CHSV(100, 30, random(100, 255));
         }
-
+        
         // Move the blobs
         for (auto &i: blob) {
             i._y++;
         }
-
+        
         previousTime = millis();
     }
 //    blur2d(p_leds, WIDTH, HEIGHT, 5);

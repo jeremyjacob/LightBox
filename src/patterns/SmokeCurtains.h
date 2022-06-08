@@ -7,9 +7,8 @@ public:
     void run();
 
 public:
-    uint8_t speed = 90;
     uint8_t scale = 8;
-
+    static constexpr const char *NAME = "Smoke Curtains";
 private:
     static constexpr uint8_t WAVES_AMOUNT = WIDTH;
     static constexpr uint8_t Clr = 0;
@@ -23,11 +22,11 @@ private:
     CRGBPalette16 gradient1 = colors3;
 private:
     static void drawPixelXYF(float x, float y, CRGB color);
-
+    
     static CRGB colorsmear(CRGB col1, CRGB col2, byte l);
-
+    
     void shift() const;
-
+    
     static void clearing();
 };
 
@@ -100,6 +99,7 @@ void SmokeCurtains::run() {
             pos[j] = reg[j];
         }
     }
+    uint8_t speed = 90 * State::speed;
     speedfactor = fmap(speed, 1., 255., .02, .2);
     shift();
     if (Clr)

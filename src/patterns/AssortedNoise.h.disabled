@@ -6,10 +6,12 @@ class AssortedNoise {
 public:
     AssortedNoise();
     void run();
+    virtual ~AssortedNoise();
     
     uint8_t mode = 1;
     uint8_t cycletime = 6.0;
     bool cycle = true;
+    static constexpr const char *NAME = "Assorted Noise";
 private:
     uint16_t noisex = 0;
     uint16_t noisey = 0;
@@ -459,9 +461,13 @@ void AssortedNoise::run() {
 }
 
 AssortedNoise::AssortedNoise() {
-    State::registerWatch([this](const ArduinoJson6192_70::DynamicJsonDocument &doc) -> void {
-        this->cycle = doc["patterns"]["AssortedNoise"]["cycle"];
-        if (!this->cycle) this->mode = doc["patterns"]["AssortedNoise"]["mode"];
-        this->cycletime = doc["patterns"]["AssortedNoise"]["cycleTime"];
+    State::registerWatch(NAME, [this](const json &doc) -> void {
+        this->cycle = doc["patterns"][NAME]["Cycle"];
+        if (!this->cycle) this->mode = doc["patterns"]["Assorted Noise"]["Mode"];
+        this->cycletime = doc["patterns"][NAME]["Cycle Time"];
     });
+}
+
+AssortedNoise::~AssortedNoise() {
+    State::unregisterWatch(NAME);
 }

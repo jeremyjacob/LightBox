@@ -10,12 +10,8 @@
 class Ameoba {
 public:
     Ameoba();
-    
+    static constexpr const char *NAME = "Ameoba";
     void run();
-
-public:
-    const int i_speed = 17;
-    int speed = i_speed;
 
 private:
     void noise_noise2();
@@ -27,18 +23,19 @@ private:
     void setup_tables();
 
 private:
+    float baseSpeed = 17.0;
     CRGB buffer1[OVERFLOW_PIXEL]{};
     CRGB buffer2[OVERFLOW_PIXEL]{};
-    uint8_t a[1024]{};
-    uint8_t b[1024]{};
-    uint8_t c[1024]{};
-    uint8_t ctrl[6]{};
-    uint32_t x[AMEOBA_LAYERS] = {(uint32_t) random(60000), (uint32_t) random(60000)};
-    uint32_t y[AMEOBA_LAYERS] = {(uint32_t) random(60000), (uint32_t) random(60000)};
-    uint32_t z[AMEOBA_LAYERS] = {(uint32_t) random(60000), (uint32_t) random(60000)};
-    uint32_t scale_x[AMEOBA_LAYERS]{};
-    uint32_t scale_y[AMEOBA_LAYERS]{};
-    uint16_t noise[AMEOBA_LAYERS][WIDTH][HEIGHT]{};
+    float a[1024]{};
+    float b[1024]{};
+    float c[1024]{};
+    float ctrl[6]{};
+    double x[AMEOBA_LAYERS] = {(double) random(60000), (double) random(60000)};
+    double y[AMEOBA_LAYERS] = {(double) random(60000), (double) random(60000)};
+    double z[AMEOBA_LAYERS] = {(double) random(60000), (double) random(60000)};
+    double scale_x[AMEOBA_LAYERS]{};
+    double scale_y[AMEOBA_LAYERS]{};
+    float noise[AMEOBA_LAYERS][WIDTH][HEIGHT]{};
 };
 
 
@@ -47,12 +44,6 @@ private:
 Ameoba::Ameoba() {
     setup_tables();
 //    FastLED.setDither(DISABLE_DITHER);
-    
-    State::registerWatch([this](const ArduinoJson6192_70::DynamicJsonDocument &doc) -> void {
-        Serial.println("Updating Ameoaba");
-        float f_speed = doc["patterns"]["Ameoba"]["speed"];
-        this->speed = this->i_speed * f_speed;
-    });
 }
 
 void Ameoba::run() {
@@ -87,11 +78,11 @@ void Ameoba::setup_tables() {
 
 
 CRGB Ameoba::shifting_colors(uint8_t value, bool inverse) const {
-    const uint16_t interval = 100000 / speed;
-    const uint8_t v = (interval / 25) ? (interval / 25) : 1;
-    uint8_t offset = millis() / v;
-    uint32_t ms = millis() % interval;
-    uint16_t mapped = map(ms, 0, interval, 0, 255);
+    const double interval = 100000 / (State::speed * baseSpeed);
+    const double v = (interval / 25) ? (interval / 25) : 1;
+    double offset = millis() / v;
+    long double ms = fmod(millis(), interval);
+    double mapped = Utils::mapd(ms, 0, interval, 0, 255);
     CRGB rgb = CRGB(value, 0, 0);
     CHSV hsv = rgb2hsv_approximate(rgb);
     hsv.hue += mapped;
@@ -107,21 +98,22 @@ CRGB Ameoba::shifting_colors(uint8_t value, bool inverse) const {
 void Ameoba::noise_noise2() {
     // LAYER ONE
     //top left
-    ctrl[0] = (ctrl[0] + noise[0][0][0] + noise[0][1][0] + noise[0][0][1] + noise[0][1][1]) / speed;
+    ctrl[0] =
+            (ctrl[0] + noise[0][0][0] + noise[0][1][0] + noise[0][0][1] + noise[0][1][1]) / (State::speed * baseSpeed);
     //top right
     ctrl[1] = (ctrl[1] + noise[0][WIDTH - 1][0] + noise[0][WIDTH - 2][0] + noise[0][WIDTH - 1][1] +
-               noise[0][WIDTH - 2][1]) / speed;
+               noise[0][WIDTH - 2][1]) / (State::speed * baseSpeed);
     //down left
     ctrl[2] = (ctrl[2] + noise[0][0][HEIGHT - 1] + noise[0][0][HEIGHT - 2] + noise[0][1][HEIGHT - 1] +
-               noise[0][1][HEIGHT - 2]) / speed;
+               noise[0][1][HEIGHT - 2]) / (State::speed * baseSpeed);
     //middle left
     ctrl[3] = (ctrl[3] + noise[0][0][CENTER_Y] + noise[0][1][CENTER_Y] + noise[0][0][CENTER_Y + 1] +
-               noise[0][1][CENTER_Y + 1]) / speed;
+               noise[0][1][CENTER_Y + 1]) / (State::speed * baseSpeed);
     //center
     ctrl[4] =
             (ctrl[4] + noise[0][WIDTH - 1][CENTER_Y] + noise[0][WIDTH - 2][CENTER_Y] +
              noise[0][WIDTH - 1][CENTER_Y + 1] +
-             noise[0][WIDTH - 2][CENTER_Y + 1]) / speed;
+             noise[0][WIDTH - 2][CENTER_Y + 1]) / (State::speed * baseSpeed);
     ctrl[5] = (ctrl[5] + ctrl[0] + ctrl[1]) / 11;
     
     x[0] = x[0] + (ctrl[0] * 2) - 127;
@@ -133,9 +125,9 @@ void Ameoba::noise_noise2() {
     //calculate the noise data
     uint8_t layer = 0;
     for (uint8_t i = 0; i < WIDTH; i++) {
-        uint32_t ioffset = scale_x[layer] * (i - CENTER_X);
+        double ioffset = scale_x[layer] * (i - CENTER_X);
         for (uint8_t j = 0; j < HEIGHT; j++) {
-            uint32_t joffset = scale_y[layer] * (j - CENTER_Y);
+            double joffset = scale_y[layer] * (j - CENTER_Y);
             uint16_t data = inoise16(x[layer] + ioffset, y[layer] + joffset, z[layer]);
             if (data < 11000) data = 11000;
             if (data > 51000) data = 51000;
@@ -182,9 +174,9 @@ void Ameoba::noise_noise2() {
     //calculate the noise data
     layer = 1;
     for (uint8_t i = 0; i < WIDTH; i++) {
-        uint32_t ioffset = scale_x[layer] * (i - CENTER_X);
+        double ioffset = scale_x[layer] * (i - CENTER_X);
         for (uint8_t j = 0; j < HEIGHT; j++) {
-            uint32_t joffset = scale_y[layer] * (j - CENTER_Y);
+            double joffset = scale_y[layer] * (j - CENTER_Y);
             uint16_t data = inoise16(x[layer] + ioffset, y[layer] + joffset, z[layer]);
             if (data < 11000) data = 11000;
             if (data > 51000) data = 51000;

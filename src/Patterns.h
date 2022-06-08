@@ -2,9 +2,11 @@
 
 #pragma once
 
+#include "patterns/AlienZoom.h"
 #include "patterns/Ameoba.h"
-#include "patterns/AssortedNoise.h"
+#include "patterns/Andromeda.h"
 #include "patterns/BlockPuzzle.h"
+#include "patterns/ConwaysLife.h"
 #include "patterns/CrossHatch.h"
 #include "patterns/EnergyBalls.h"
 #include "patterns/FireRings.h"
@@ -15,141 +17,86 @@
 #include "patterns/InfinitySign.h"
 #include "patterns/Living.h"
 #include "patterns/LostLands.h"
-#include "patterns/Metaballs.h"
 #include "patterns/Off.h"
+#include "patterns/Oscilloscope.h"
 #include "patterns/Plasm.h"
 #include "patterns/PlasmaWaves.h"
 #include "patterns/Pool.h"
 #include "patterns/Rainbow.h"
 #include "patterns/SmokeCurtains.h"
-#include "patterns/SolidColor.h"
 #include "patterns/Spirits.h"
-#include "patterns/TheMatrix.h"
 #include "patterns/Strobe.h"
-#include "patterns/Police.h"
+#include "patterns/TheMatrix.h"
 
 
-enum Pattern {
-    INIT,
-    AMEOBA,
-    ASSORTEDNOISE,
-    BLOCKPUZZLE,
-    CROSSHATCH,
-    ENERGYBALLS,
-    FIRERINGS,
-    FIREPLACE,
-    GALAXY,
-    GEOMETRY,
-    ICYNOISE,
-    INFINITYSIGN,
-    LIVING,
-    LOSTLANDS,
-    METABALLS,
-    OFF,
-    PLASM,
-    PLASMAWAVES,
-    POOL,
-    RAINBOW,
-    SMOKECURTAINS,
-    SOLIDCOLOR,
-    SPIRITS,
-    THEMATRIX,
-    STROBE,
-    POLICE,
-};
-
+enum Pattern {INIT, ALIENZOOM, AMEOBA, ANDROMEDA, BLOCKPUZZLE, CONWAYSLIFE, CROSSHATCH, ENERGYBALLS, FIRERINGS, FIREPLACE, GALAXY, GEOMETRY, ICYNOISE, INFINITYSIGN, LIVING, LOSTLANDS, OFF, OSCILLOSCOPE, PLASM, PLASMAWAVES, POOL, RAINBOW, SMOKECURTAINS, SPIRITS, STROBE, THEMATRIX,};
 class Patterns {
 public:
     static Pattern selected_pattern;
 public:
     static void tick();
-    
+
     static void set(Pattern);
 };
 
 Pattern Patterns::selected_pattern = Pattern::INIT;
 
-Ameoba *ameoba;
-AssortedNoise *assortednoise;
-BlockPuzzle *blockpuzzle;
-CrossHatch *crosshatch;
-EnergyBalls *energyballs;
-FireRings *firerings;
-Fireplace *fireplace;
-Galaxy *galaxy;
-Geometry *geometry;
-IcyNoise *icynoise;
-InfinitySign *infinitysign;
-Living *living;
-LostLands *lostlands;
-Metaballs *metaballs;
-Off *off;
-Plasm *plasm;
-PlasmaWaves *plasmawaves;
-Pool *pool;
-Rainbow *rainbow;
-SmokeCurtains *smokecurtains;
-SolidColor *solidcolor;
-Spirits *spirits;
+AlienZoom *alienzoom; 
+Ameoba *ameoba; 
+Andromeda *andromeda; 
+BlockPuzzle *blockpuzzle; 
+ConwaysLife *conwayslife; 
+CrossHatch *crosshatch; 
+EnergyBalls *energyballs; 
+FireRings *firerings; 
+Fireplace *fireplace; 
+Galaxy *galaxy; 
+Geometry *geometry; 
+IcyNoise *icynoise; 
+InfinitySign *infinitysign; 
+Living *living; 
+LostLands *lostlands; 
+Off *off; 
+Oscilloscope *oscilloscope; 
+Plasm *plasm; 
+PlasmaWaves *plasmawaves; 
+Pool *pool; 
+Rainbow *rainbow; 
+SmokeCurtains *smokecurtains; 
+Spirits *spirits; 
+Strobe *strobe; 
 TheMatrix *thematrix;
-Strobe *strobe;
-Police *police;
 
 
 void Patterns::tick() {
 //    Serial.println("Tick()");
     switch (selected_pattern) {
-        case AMEOBA: ameoba->run();
-            break;
-        case ASSORTEDNOISE: assortednoise->run();
-            break;
-        case BLOCKPUZZLE: blockpuzzle->run();
-            break;
-        case CROSSHATCH: crosshatch->run();
-            break;
-        case ENERGYBALLS: energyballs->run();
-            break;
-        case FIRERINGS: firerings->run();
-            break;
-        case FIREPLACE: fireplace->run();
-            break;
-        case GALAXY: galaxy->run();
-            break;
-        case GEOMETRY: geometry->run();
-            break;
-        case ICYNOISE: icynoise->run();
-            break;
-        case INFINITYSIGN: infinitysign->run();
-            break;
-        case LIVING: living->run();
-            break;
-        case LOSTLANDS: lostlands->run();
-            break;
-        case METABALLS: metaballs->run();
-            break;
-        case OFF: off->run();
-            break;
-        case PLASM: plasm->run();
-            break;
-        case PLASMAWAVES: plasmawaves->run();
-            break;
-        case POOL: pool->run();
-            break;
-        case RAINBOW: rainbow->run();
-            break;
-        case SMOKECURTAINS: smokecurtains->run();
-            break;
-        case SOLIDCOLOR: solidcolor->run();
-            break;
-        case SPIRITS: spirits->run();
-            break;
-        case THEMATRIX: thematrix->run();
-            break;
-        case STROBE: strobe->run();
-            break;
-        case POLICE: police->run();
-            break;
-        
+        case ALIENZOOM: alienzoom->run(); break; 
+case AMEOBA: ameoba->run(); break; 
+case ANDROMEDA: andromeda->run(); break; 
+case BLOCKPUZZLE: blockpuzzle->run(); break; 
+case CONWAYSLIFE: conwayslife->run(); break; 
+case CROSSHATCH: crosshatch->run(); break; 
+case ENERGYBALLS: energyballs->run(); break; 
+case FIRERINGS: firerings->run(); break; 
+case FIREPLACE: fireplace->run(); break; 
+case GALAXY: galaxy->run(); break; 
+case GEOMETRY: geometry->run(); break; 
+case ICYNOISE: icynoise->run(); break; 
+case INFINITYSIGN: infinitysign->run(); break; 
+case LIVING: living->run(); break; 
+case LOSTLANDS: lostlands->run(); break; 
+case OFF: off->run(); break; 
+case OSCILLOSCOPE: oscilloscope->run(); break; 
+case PLASM: plasm->run(); break; 
+case PLASMAWAVES: plasmawaves->run(); break; 
+case POOL: pool->run(); break; 
+case RAINBOW: rainbow->run(); break; 
+case SMOKECURTAINS: smokecurtains->run(); break; 
+case SPIRITS: spirits->run(); break; 
+case STROBE: strobe->run(); break; 
+case THEMATRIX: thematrix->run(); break;
+
     }
     
     for (int x = 0; x < WIDTH; ++x) {
@@ -159,111 +106,62 @@ void Patterns::tick() {
 
 void Patterns::set(Pattern
                    _pattern) {
+    if (selected_pattern == _pattern) return;
     switch (selected_pattern) {
-        case AMEOBA: delete ameoba;
-            break;
-        case ASSORTEDNOISE: delete assortednoise;
-            break;
-        case BLOCKPUZZLE: delete blockpuzzle;
-            break;
-        case CROSSHATCH: delete crosshatch;
-            break;
-        case ENERGYBALLS: delete energyballs;
-            break;
-        case FIRERINGS: delete firerings;
-            break;
-        case FIREPLACE: delete fireplace;
-            break;
-        case GALAXY: delete galaxy;
-            break;
-        case GEOMETRY: delete geometry;
-            break;
-        case ICYNOISE: delete icynoise;
-            break;
-        case INFINITYSIGN: delete infinitysign;
-            break;
-        case LIVING: delete living;
-            break;
-        case LOSTLANDS: delete lostlands;
-            break;
-        case METABALLS: delete metaballs;
-            break;
-        case OFF: delete off;
-            break;
-        case PLASM: delete plasm;
-            break;
-        case PLASMAWAVES: delete plasmawaves;
-            break;
-        case POOL: delete pool;
-            break;
-        case RAINBOW: delete rainbow;
-            break;
-        case SMOKECURTAINS: delete smokecurtains;
-            break;
-        case SOLIDCOLOR: delete solidcolor;
-            break;
-        case SPIRITS: delete spirits;
-            break;
-        case THEMATRIX: delete thematrix;
-            break;
-        case STROBE: delete strobe;
-            break;
-        case POLICE: delete police;
-            break;
-        
+        case ALIENZOOM: delete alienzoom; break; 
+case AMEOBA: delete ameoba; break; 
+case ANDROMEDA: delete andromeda; break; 
+case BLOCKPUZZLE: delete blockpuzzle; break; 
+case CONWAYSLIFE: delete conwayslife; break; 
+case CROSSHATCH: delete crosshatch; break; 
+case ENERGYBALLS: delete energyballs; break; 
+case FIRERINGS: delete firerings; break; 
+case FIREPLACE: delete fireplace; break; 
+case GALAXY: delete galaxy; break; 
+case GEOMETRY: delete geometry; break; 
+case ICYNOISE: delete icynoise; break; 
+case INFINITYSIGN: delete infinitysign; break; 
+case LIVING: delete living; break; 
+case LOSTLANDS: delete lostlands; break; 
+case OFF: delete off; break; 
+case OSCILLOSCOPE: delete oscilloscope; break; 
+case PLASM: delete plasm; break; 
+case PLASMAWAVES: delete plasmawaves; break; 
+case POOL: delete pool; break; 
+case RAINBOW: delete rainbow; break; 
+case SMOKECURTAINS: delete smokecurtains; break; 
+case SPIRITS: delete spirits; break; 
+case STROBE: delete strobe; break; 
+case THEMATRIX: delete thematrix; break;
+
     }
     selected_pattern = _pattern;
     switch (selected_pattern) {
-        case AMEOBA: ameoba = new Ameoba();
-            break;
-        case ASSORTEDNOISE: assortednoise = new AssortedNoise();
-            break;
-        case BLOCKPUZZLE: blockpuzzle = new BlockPuzzle();
-            break;
-        case CROSSHATCH: crosshatch = new CrossHatch();
-            break;
-        case ENERGYBALLS: energyballs = new EnergyBalls();
-            break;
-        case FIRERINGS: firerings = new FireRings();
-            break;
-        case FIREPLACE: fireplace = new Fireplace();
-            break;
-        case GALAXY: galaxy = new Galaxy();
-            break;
-        case GEOMETRY: geometry = new Geometry();
-            break;
-        case ICYNOISE: icynoise = new IcyNoise();
-            break;
-        case INFINITYSIGN: infinitysign = new InfinitySign();
-            break;
-        case LIVING: living = new Living();
-            break;
-        case LOSTLANDS: lostlands = new LostLands();
-            break;
-        case METABALLS: metaballs = new Metaballs();
-            break;
-        case OFF: off = new Off();
-            break;
-        case PLASM: plasm = new Plasm();
-            break;
-        case PLASMAWAVES: plasmawaves = new PlasmaWaves();
-            break;
-        case POOL: pool = new Pool();
-            break;
-        case RAINBOW: rainbow = new Rainbow();
-            break;
-        case SMOKECURTAINS: smokecurtains = new SmokeCurtains();
-            break;
-        case SOLIDCOLOR: solidcolor = new SolidColor();
-            break;
-        case SPIRITS: spirits = new Spirits();
-            break;
-        case THEMATRIX: thematrix = new TheMatrix();
-            break;
-        case STROBE: strobe = new Strobe();
-            break;
-        case POLICE: police = new Police();
-            break;
-        
+        case ALIENZOOM: alienzoom = new AlienZoom(); break; 
+case AMEOBA: ameoba = new Ameoba(); break; 
+case ANDROMEDA: andromeda = new Andromeda(); break; 
+case BLOCKPUZZLE: blockpuzzle = new BlockPuzzle(); break; 
+case CONWAYSLIFE: conwayslife = new ConwaysLife(); break; 
+case CROSSHATCH: crosshatch = new CrossHatch(); break; 
+case ENERGYBALLS: energyballs = new EnergyBalls(); break; 
+case FIRERINGS: firerings = new FireRings(); break; 
+case FIREPLACE: fireplace = new Fireplace(); break; 
+case GALAXY: galaxy = new Galaxy(); break; 
+case GEOMETRY: geometry = new Geometry(); break; 
+case ICYNOISE: icynoise = new IcyNoise(); break; 
+case INFINITYSIGN: infinitysign = new InfinitySign(); break; 
+case LIVING: living = new Living(); break; 
+case LOSTLANDS: lostlands = new LostLands(); break; 
+case OFF: off = new Off(); break; 
+case OSCILLOSCOPE: oscilloscope = new Oscilloscope(); break; 
+case PLASM: plasm = new Plasm(); break; 
+case PLASMAWAVES: plasmawaves = new PlasmaWaves(); break; 
+case POOL: pool = new Pool(); break; 
+case RAINBOW: rainbow = new Rainbow(); break; 
+case SMOKECURTAINS: smokecurtains = new SmokeCurtains(); break; 
+case SPIRITS: spirits = new Spirits(); break; 
+case STROBE: strobe = new Strobe(); break; 
+case THEMATRIX: thematrix = new TheMatrix(); break;
+
     }
 }

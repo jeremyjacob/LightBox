@@ -32,8 +32,9 @@ void Patterns::tick() {
     }
 }
 
-void Patterns::set(Patterns::Pattern
+void Patterns::set(Pattern
                    _pattern) {
+    if (selected_pattern == _pattern) return;
     switch (selected_pattern) {
         #DELETE_SWITCH
     }
@@ -54,8 +55,7 @@ def test(node):
 
     patterns = []
     files = glob.glob("src/patterns/*.h")
-    files.sort(key=os.path.getctime)
-    for filename in files:
+    for filename in sorted(files):
         if filename.startswith("."): continue
         patterns.append(filename.replace(".h", "").split("\\")[-1])
 

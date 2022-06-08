@@ -1,17 +1,19 @@
 #pragma once
 
 #include "Panel.h"
+#include "State.h"
 #include <vector>
 
 class Police {
 public:
     void run();
+    static constexpr const char *NAME = "Police";
 private:
     bool alt = false;
 };
 
 void Police::run() {
-    EVERY_N_MILLIS(250)
+    EVERY_N_MILLIS(250 / State::speed)
     {
         alt = !alt;
         for (int x = 0; x < WIDTH; ++x) {

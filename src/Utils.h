@@ -1,6 +1,23 @@
 #pragma once
 
-struct Utils {
+namespace Utils {
+    static uint32_t rgbToHex(uint8_t r, uint8_t g, uint8_t b) {
+        return (r << 16) | (g << 8) | b;
+    }
+    
+    static double millisd() {
+        const double m = millis();
+        return m;
+    }
+    
+    static double mapd(double x, double in_min, double in_max, double out_min, double out_max) {
+        const double dividend = out_max - out_min;
+        const double divisor = in_max - in_min;
+        const double delta = x - in_min;
+        
+        return (delta * dividend + (divisor / 2)) / divisor + out_min;
+    }
+    
     static void fill(CRGB *where, CRGB color) {
         // auto loop where
         for (auto i = 0; i < NUM_LEDS; i++) {

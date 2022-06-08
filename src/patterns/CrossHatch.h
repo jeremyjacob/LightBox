@@ -4,8 +4,7 @@
 
 class CrossHatch {
 public:
-    CrossHatch() {};
-    
+    static constexpr const char *NAME = "Cross Hatch";
     void run();
 
 private:
@@ -15,9 +14,10 @@ private:
         bool _right;
         CHSV _colour;
     };
-    Blobs blob[20];
+    Blobs blob[20]{};
     uint8_t blobCounter = 0;
-    const uint8_t blobRate = 5;     // Higher number is fewer blobs
+    static constexpr uint8_t iblobRate = 5;
+    uint8_t blobRate = 5;     // Higher number is fewer blobs
     long previousTime = 0;
 };
 
@@ -41,14 +41,14 @@ void CrossHatch::run() {
         }
         
         // Draw the blobs
-        for (int i = 0; i < 20; i++) {
-            p_leds[XY(blob[i]._x, blob[i]._y)] = p_leds[XY(blob[i]._x, blob[i]._y)] + blob[i]._colour;
+        for (auto &i: blob) {
+            p_leds[XY(i._x, i._y)] = p_leds[XY(i._x, i._y)] + i._colour;
         }
         
         // Move the blobs
-        for (int i = 0; i < 20; i++) {
-            if (blob[i]._right) { blob[i]._x++; }
-            else { blob[i]._y++; }
+        for (auto &i: blob) {
+            if (i._right) { i._x++; }
+            else { i._y++; }
         }
         
         previousTime = millis();

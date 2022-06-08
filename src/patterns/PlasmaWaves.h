@@ -5,6 +5,7 @@
 class PlasmaWaves {
 public:
     void run();
+    static constexpr const char *NAME = "Plasma Waves";
 };
 
 void PlasmaWaves::run() {
@@ -18,5 +19,4 @@ void PlasmaWaves::run() {
             p_leds[index] = ColorFromPalette(myPal, hue);
         }
     }
-    ;
 }

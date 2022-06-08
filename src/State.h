@@ -1,166 +1,98 @@
 #pragma once
 
-#define ARDUINOJSON_DECODE_UNICODE 0
-#define ARDUINOJSON_ENABLE_PROGMEM 0
-
-#include <vector>
-#include <map>
-#include <any>
-#include "Text.h"
-#include "Patterns.h"
 #include <ArduinoJson.h>
-//#include <ArduinoJson.h/>
 
+//#include "Patterns.h"
+//#include "StateFile.h"
+
+namespace Network {
+    void broadcast(char *string);
+    void broadcast(const char *string);
+}
+
+namespace Utils {
+    static uint32_t rgbToHex(uint8_t r, uint8_t g, uint8_t b);
+}
+void updateFromState();
+
+struct TextComponent {
+    uint8_t type = 0;
+    uint8_t font = 0;
+    int8_t x = 0;
+    int8_t y = 0;
+    boolean enabled = true;
+    uint32_t color = 16777215;
+    std::string body;
+};
+
+void convertToJson(std::vector<TextObject> src, JsonVariant dst) {
+    for (auto obj: src) {
+        auto ref = dst.addElement();
+        ref["type"] = obj.type;
+        ref["font"] = obj.getFont();
+        ref["x"] = obj.cursor_x;
+        ref["y"] = obj.cursor_y;
+        ref["enabled"] = obj.enabled;
+        ref["color"] = Utils::rgbToHex(obj.text_color.r, obj.text_color.g, obj.text_color.b);
+        ref["body"] = obj.body;
+    }
+}
 
 namespace State {
-//    using namespace ArduinoJson6192_70;
-    constexpr const char *CONFIG_PATH = "config.json";
+    using namespace ArduinoJson6194_F1;
     
-    struct Config {
-        uint8_t brightness = 30;
-        std::vector<TextObject> text;
-        Pattern pattern = Pattern::AMEOBA;
-        std::map<std::string, std::map<std::string, std::any>> patterns;
-    };
-    Config config;
+    bool enabled = true;
+    uint8_t streamLayer = 0;
+    uint8_t brightness = 30;
+    float speed = 1.0;
+    uint8_t pattern = 1;
+    std::vector<TextObject> textComponents;
     
-    void loadConfig() {
-        File file = LITTLEFS.open(CONFIG_PATH);
-        if (!file || file.isDirectory()) {
-            Serial.println("Failed to open file for reading");
-            return;
-        }
-        
-        DynamicJsonDocument doc(2048);
-        // Deserialize the JSON document
-        DeserializationError error = deserializeJson(doc, file);
-        if (error) Serial.println("Failed to deserialize from FS");
-        
-        config.brightness = doc["brightness"];
-        config.pattern = (Pattern) doc["pattern"];
-        JsonArray textArray = doc["text"];
-        std::vector<TextObject> textVec;
-        for (JsonObject textJSON: textArray) {
-            TextObject textObject;
-            if (!textJSON["color"].isNull()) textObject.set_color(textJSON["color"].isNull());
-        }
-    }
-    
-    
-    void onUpdate() {
-        if (config.pattern != Patterns::selected_pattern) {
-            Patterns::set(config.pattern);
-        }
-    }
-    
-    void merge(JsonVariant dst, JsonVariantConst src) {
-        if (src.is<JsonObject>()) {
-            for (auto kvp: src.as<JsonObject>()) {
-                merge(dst.getOrAddMember(kvp.key()), kvp.value());
+    void merge(const uint8_t *data, const size_t len) {
+        const std::string str(reinterpret_cast<const char *>(data), len);
+        try {
+            DynamicJsonDocument doc(1024);
+            deserializeJson(doc, str);
+            enabled = doc["enabled"] | true;
+            streamLayer = doc["streamLayer"] | streamLayer;
+            brightness = doc["brightness"] | brightness;
+            speed = doc["speed"] | speed;
+            pattern = doc["pattern"] | pattern;
+            if (doc["text"]) {
+                textComponents.clear();
+                JsonArray text = doc["text"];
+                for (JsonVariant v: text) {
+                    TextObject t(v["enabled"] | true, static_cast<FONT>(v["font"] | 0), v["x"] | 0,
+                                 v["y"] | 0, v["body"] | "", v["color"] | 16777215,
+                                 static_cast<TextTypes>(v["type"] | 0)
+                    );
+                    
+                    Network::broadcast("Adding text: ");
+                    Network::broadcast(t.body.c_str());
+                    
+                    textComponents.push_back(t);
+                }
             }
-        } else {
-            dst.set(src);
+        } catch (std::exception &e) {
+            Serial.println(e.what());
         }
+        updateFromState();
     }
     
-    void merge(JsonVariantConst patch) {
-        merge(doc.as<JsonVariant>(), patch);
+    std::basic_string<char> asJsonString() {
+        DynamicJsonDocument doc(1024);
+        doc["enabled"] = enabled;
+        doc["streamLayer"] = streamLayer;
+        doc["brightness"] = brightness;
+        doc["speed"] = speed;
+        doc["pattern"] = pattern;
+        doc["text"] = textComponents;
+//        for (const auto &text: textComponents) {
+//            ArrayRef array = doc.createNestedArray("text");
+//            array.add(text);
+//        }
+        std::string str;
+        serializeJson(doc, str);
+        return str;
     }
-    
-    char json[] = R"json({
-      "brightness": 30,
-      "text": [
-        {
-          "type": 0,
-          "font": 0,
-          "x": 0,
-          "y": 0,
-          "color": 12415515,
-          "body": "Hello!"
-        }
-      ],
-      "pattern": 0,
-      "patterns": {
-        "Ameoba": {
-          "speed": 1.0
-        },
-        "AssortedNoise": {
-          "cycleTime": 1,
-          "cycle": true,
-          "mode": 1
-        },
-        "BlockPuzzle": {
-          "speed": 1.0
-        },
-        "CrossHatch": {
-          "speed": 1.0
-        },
-        "EnergyBalls": {},
-        "Fireplace": {
-          "scale": 1.0,
-          "speed": 1.0
-        },
-        "FireRings": {},
-        "Galaxy": {
-          "speed": 1.0
-        },
-        "Geometry": {
-          "speed": 1.0
-        },
-        "IcyNoise": {
-          "speed": 1.0
-        },
-        "InfinitySign": {
-          "speed": 1.0
-        },
-        "Living": {
-          "speed": 1.0,
-          "mirror": true
-        },
-        "LostLands": {},
-        "Metaballs": {
-          "speed": 1.0
-        },
-        "Off": {},
-        "Plasm": {
-          "speed": 1.0
-        },
-        "PlasmaWaves": {
-          "speed": 1.0
-        },
-        "Police": {
-          "speed": 1.0
-        },
-        "Pool": {
-          "speed": 1.0,
-          "scale": 1.0
-        },
-        "Rainbow": {},
-        "SmokeCurtains": {
-          "speed": 1.0,
-          "scale": 1.0
-        },
-        "Spirits": {
-          "speed": 1.0
-        },
-        "SolidColor": {
-          "color": 14791283
-        },
-        "Strobe": {
-          "colors": [
-            14791283,
-            28579123
-          ],
-          "hertz": 5.0,
-          "smooth": true
-        },
-        "TheMatrix": {}
-      }
-    })json";
-    
-    void setup() {
-        deserializeJson(doc, json);
-        delay(10);
-    }
-    
 }
