@@ -1,11 +1,14 @@
-import { defineConfig } from 'vite'
-import { svelte } from '@sveltejs/vite-plugin-svelte'
-import sveltePreprocess from 'svelte-preprocess'
-import autoprefixer from 'autoprefixer'
+import { defineConfig } from 'vite';
+import { svelte } from '@sveltejs/vite-plugin-svelte';
+import sveltePreprocess from 'svelte-preprocess';
+import autoprefixer from 'autoprefixer';
 
 // https://vitejs.dev/config/
-const production = process.env.NODE_ENV === 'production'
+const production = process.env.NODE_ENV === 'production';
 export default defineConfig({
+	build: {
+		outDir: '../docs',
+	},
 	plugins: [
 		svelte({
 			emitCss: production,
@@ -22,4 +25,4 @@ export default defineConfig({
 			plugins: [autoprefixer()],
 		},
 	},
-})
+});
