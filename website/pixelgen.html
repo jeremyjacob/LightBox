@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Pixel Generator</title>
+</head>
+
+<body>
+	<canvas id="canvas"></canvas>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"
+		integrity="sha512-Qlv6VSKh1gDKGoJbnyA5RMXYcvnpIqhO++MhIM2fStMcGT9i2T//tSwYFlcyoRRDcDZ+TYHpH8azBBCyhpSeqw=="
+		crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script>
+		const num_colors = 5;
+		let colors = []
+
+		const filenames = [
+			'AssortedNoise.png',
+			'Ameoba.png',
+			'BlockPuzzle.png',
+			'SmokeCurtains.png',
+			'LostLands.png',
+			'Living.png',
+			'ExpandingCircles.png',
+			'Geometry.png',
+			'InfinitySign.png',
+			'Metaballs.png',
+			'CrossHatch.png',
+			'IcyNoise.png',
+			'TheMatrix.png',
+			'Plasm.png',
+			'Pool.png',
+			'EnergyBalls.png',
+			'FireRings.png',
+			'Rainbow.png',
+			'Spirits.png',
+			'Fireplace.png',
+			'Galaxy.png',
+			'PlasmaWaves.png',
+			'Off.png',
+			'SolidColor.png',
+		]
+
+
+		function generate() {
+			colors = [...Array(num_colors)].map(i => getRandomColor())
+			this.colors = colors;
+
+			generatePattern();
+		}
+
+		function randomIntFromInterval(min, max) {
+			return Math.floor(Math.random() * (max - min + 1) + min);
+		}
+
+		function getRandomColor() {
+			let letters = '0123456789ABCDEF';
+			let color = '#';
+			for (let i = 0; i < 6; i++) {
+				color += letters[Math.floor(Math.random() * 16)];
+			}
+			return color;
+		}
+
+		let canvas = document.getElementById('canvas');
+		let context = canvas.getContext('2d');
+
+		function generatePattern() {
+			let width = 16;
+			let height = width;
+
+			canvas.width = width;
+			canvas.height = height;
+			context.fillStyle = colors[0];
+			context.fillRect(0, 0, width, height);
+
+			for (let i = 0; i < width / 2; i++) {
+				for (let j = 0; j < height; j++) {
+					let index = randomIntFromInterval(0, colors.length);
+					context.fillStyle = colors[index];
+					context.fillRect(i, j, 1, 1);
+					context.fillRect((width - 1) - i, j, 1, 1);
+				}
+			}
+		}
+
+		window.onload = () => {
+			generate();
+			return;
+			setInterval(() => {
+				if (filenames.length == 0) return
+				generate();
+				canvas.toBlob(function (blob) {
+					saveAs(blob, filenames.pop());
+				});
+			}, 500);
+		};
+	</script>
+	<style>
+		canvas {
+			width: 512px;
+			height: 512px;
+			image-rendering: -moz-crisp-edges;
+			image-rendering: -webkit-crisp-edges;
+			image-rendering: pixelated;
+			image-rendering: crisp-edges;
+		}
+	</style>
+</body>
+
+</html>
