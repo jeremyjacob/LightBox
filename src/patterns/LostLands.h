@@ -5,24 +5,19 @@
 class LostLands {
 public:
     void run();
-
+    static constexpr const char *NAME = "Lost Lands";
 private:
     void ImEff();
-
+    
     void background();
-
+    
     void backgroundObjects();
 };
-
-#define variant 2
 
 void LostLands::run() {
     background();
     backgroundObjects();
-    //Person();
-    //Objects();
     ImEff();
-    ;
 }
 
 extern const TProgmemRGBPalette16 HeLLthy
@@ -34,34 +29,9 @@ extern const TProgmemRGBPalette16 HeLLthy
 void LostLands::background() {
     for (byte x = 0; x < WIDTH; x++) {
         for (byte y = 0; y < HEIGHT; y++) {
-            switch (variant) {
-                case 0:
-                    p_leds[XY(x, y)] = ColorFromPalette(HeatColors_p, inoise8(x * 10, (y * 50) + millis() / 100),
-                                                      y * (255 / HEIGHT));
-                    break;
-                case 1:
-                    p_leds[XY(x, y)] = ColorFromPalette(OceanColors_p, inoise8((x * 50), (y * 10) + millis() / 10) / 2.5,
-                                                      255 - y * (255 / HEIGHT));
-                    break;
-                case 2:
-                    p_leds[XY(x, y)] = ColorFromPalette(CloudColors_p, inoise8((x * 100), (y * 10) - millis() / 10),
-                                                      255 - (abs(x - WIDTH / 2) * (255 / WIDTH * 2)));
-                    break;
-                case 3:
-                    p_leds[XY(x, y)] = ColorFromPalette(PartyColors_p, inoise8((x * (HEIGHT - 1 - y)) + (y * 10),
-                                                                             (y * 50) + millis() / 100),
-                                                      y * (255 / HEIGHT));
-                    break;
-                case 4:
-                    p_leds[XY(x, y)] = CHSV(0, 0, inoise8(x * 100, (y * 100) - millis() / 100));
-                    break;
-                case 5:
-                    p_leds[XY(x, y)] = CHSV(150, 150, inoise8(x * 100, y * 100, millis() / 10));
-                    break;
-                case 6:
-                    p_leds[XY(x, y)] = ColorFromPalette(HeLLthy, 255 - inoise8(x * 100, y * 10, millis() / 10));
-                    break;
-            }
+            p_leds[XY(x, y)] = ColorFromPalette(CloudColors_p,
+                                                inoise8((x * 100), (y * 10) - (millis() / 10) * State::speed),
+                                                255 - (abs(x - WIDTH / 2) * (255 / WIDTH * 2)));
         }
     }
 }
@@ -69,22 +39,7 @@ void LostLands::background() {
 void LostLands::backgroundObjects() {
     for (byte x = 0; x < WIDTH; x++) {
         for (byte y = 0; y < HEIGHT; y++) {
-            switch (variant) {
-                case 0:
-                    p_leds[XY(x, y)] -= CHSV(0, 0, inoise8(x * 50, y * 10, millis() / 100));
-                    break;
-                case 2:
-                    p_leds[XY(x, y)] -= CHSV(0, 0, inoise8(x * 50, y * 50, millis() / 10));
-                    break;
-                case 3:
-                    p_leds[XY(x, y)] -= CHSV(0, 0, inoise8(y * 50, (x * (HEIGHT - 1 - y)) + (y * 10), millis() / 10));
-                    break;
-                case 4:
-                    p_leds[XY(x, y)] -= CHSV(0, ((abs(y - HEIGHT / 2) + abs(x - WIDTH / 2))) *
-                                                (255 / ((WIDTH * 2) + (HEIGHT * 2))),
-                                             inoise8(abs(WIDTH / 2 - x) * 50, y * 50, millis() / 10));
-                    break;
-            }
+            p_leds[XY(x, y)] -= CHSV(0, 0, inoise8(x * 50, y * 50, (millis() / 10) * State::speed));
         }
     }
 }

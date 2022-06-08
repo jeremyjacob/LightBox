@@ -1,0 +1,98 @@
+{
+  "brightness": 30,
+  "text": [
+    {
+      "type": 0,
+      "font": 0,
+      "x": 0,
+      "y": 0,
+      "enabled": true,
+      "color": 16777215,
+      "body": ""
+    }
+  ],
+  "pattern": 2,
+  "patterns": {
+    "Alien Zoom": {
+      "Speed": 1.0
+    },
+    "Ameoba": {
+      "Speed": 1.0
+    },
+    "Block Puzzle": {
+      "Speed": 1.0
+    },
+    "Conways Life": {
+      "Speed": 1.0,
+      "Color": 14702250
+    },
+    "Cross Hatch": {
+      "Quantity": 10.0
+    },
+    "Energy Balls": {},
+    "Fireplace": {
+      "Scale": 1.0,
+      "Speed": 1.0
+    },
+    "Fire Rings": {},
+    "Galaxy": {
+      "Speed": 1.0
+    },
+    "Geometry": {
+      "Speed": 1.0
+    },
+    "Icy Noise": {
+      "Speed": 1.0,
+      "Scale": 1.0,
+      "Hue": 0
+    },
+    "Infinity Sign": {
+      "Speed": 1.0
+    },
+    "Living": {
+      "Speed X": 1.0,
+      "Speed Y": 1.0,
+      "Mirror": true
+    },
+    "Lost Lands": {},
+    "Off": {},
+    "Oscilloscope": {
+      "Speed": 1.0,
+      "Amplitude X": 1.0,
+      "Amplitude Y": 1.0,
+      "Frequency X": 30,
+      "Frequency Y": 30,
+      "Phase X": 1.0,
+      "Phase Y": 1.0,
+      "Ephemerality": 9
+    },
+    "Plasm": {
+      "Speed": 1.0
+    },
+    "Plasma Waves": {},
+    "Pool": {
+      "Hue": 143,
+      "Scale": 1.0
+    },
+    "Rainbow": {},
+    "Smoke Curtains": {
+      "Speed": 1.0,
+      "Scale": 1.0
+    },
+    "Spirits": {
+      "Speed": 1.0
+    },
+    "Solid Color": {
+      "color": 14791283
+    },
+    "Strobe": {
+      "Colors": [
+        14791283,
+        28579123
+      ],
+      "Hertz": 5.0,
+      "Smooth": true
+    },
+    "The Matrix": {}
+  }
+}

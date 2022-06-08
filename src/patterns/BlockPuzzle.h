@@ -3,18 +3,17 @@
 class BlockPuzzle {
 public:
     void run();
-
-public:
-    uint16_t delay = 250;
+    static constexpr const char *NAME = "Block Puzzle";
 
 private:
-    float speed_move = 0.5;
-
-    void drawPixelXYF(float x, float y, const CRGB &color);
-
+    const uint16_t delay = 250;
+    const float ispeed_move = 0.5;
+    
+    static void drawPixelXYF(float x, float y, const CRGB &color);
+    
     static void draw_square(byte x1, byte y1, byte x2, byte y2, byte col);
-
-    void draw_squareF(float x1, float y1, float x2, float y2, byte col);
+    
+    static void draw_squareF(float x1, float y1, float x2, float y2, byte col);
 
 private:
     static const uint8_t PSizeX = 4;
@@ -25,37 +24,36 @@ private:
     static const bool Ra = (HEIGHT % PSizeY) ? true : false;
     static constexpr int PCols = Ecols + Ca;
     static constexpr int PRows = Erows + Ra;
-
-    byte puzzle[PCols][PRows];
-    byte tmpp;
-    byte z_dot[2];
-    byte etap;
-    int8_t move[2];
+    
+    byte puzzle[PCols][PRows]{};
+    byte tmpp{};
+    byte z_dot[2]{};
+    byte etap{};
+    int8_t move[2]{};
     float shift[2] = {0, 0};
-    bool XorY;
+    bool XorY{};
     bool setup = true;
 };
 
 void BlockPuzzle::run() {
     if (setup) {
         etap = 0;
-        for (byte x = 0; x < PCols; x++) {
-            for (byte y = 0; y < PRows; y++) { puzzle[x][y] = random8(16, 255); }
+        for (auto &x: puzzle) {
+            for (uint8_t &y: x) { y = random8(16, 255); }
         }
         z_dot[0] = random(0, PCols);
         z_dot[1] = random(0, PRows);
         puzzle[z_dot[0]][z_dot[1]] = 0;
         setup = false;
     }
-
+    
     for (byte x = 0; x < PCols; x++) {
         for (byte y = 0; y < PRows; y++) {
             draw_square(x * PSizeX, y * PSizeY, (x + 1) * PSizeX, (y + 1) * PSizeY, puzzle[x][y]);
         }
     }
     switch (etap) {
-        case 0:
-            FastLED.delay(delay);
+        case 0:FastLED.delay(delay);
             XorY = !XorY;
             if (XorY) {
                 if (z_dot[0] == PCols - 1)
@@ -71,8 +69,7 @@ void BlockPuzzle::run() {
             move[(XorY) ? 1 : 0] = 0;
             etap = 1;
             break;
-        case 1:
-            tmpp = puzzle[z_dot[0] + move[0]][z_dot[1] + move[1]];
+        case 1:tmpp = puzzle[z_dot[0] + move[0]][z_dot[1] + move[1]];
             puzzle[z_dot[0] + move[0]][z_dot[1] + move[1]] = 0;
             etap = 2;
             break;
@@ -80,8 +77,8 @@ void BlockPuzzle::run() {
             draw_squareF(((z_dot[0] + move[0]) * PSizeX) + shift[0], ((z_dot[1] + move[1]) * PSizeY) + shift[1],
                          ((z_dot[0] + move[0] + 1) * PSizeX) + shift[0], (z_dot[1] + move[1] + 1) * PSizeY + shift[1],
                          tmpp);
-            shift[0] -= (move[0] * speed_move);
-            shift[1] -= (move[1] * speed_move);
+            shift[0] -= (move[0] * ispeed_move * State::speed);
+            shift[1] -= (move[1] * ispeed_move * State::speed);
             if ((fabs(shift[0]) >= WIDTH / PCols) || (fabs(shift[1]) >= HEIGHT / PRows)) {
                 shift[0] = 0;
                 shift[1] = 0;
@@ -89,8 +86,7 @@ void BlockPuzzle::run() {
                 etap = 3;
             }
             break;
-        case 3:
-            z_dot[0] += move[0];
+        case 3:z_dot[0] += move[0];
             z_dot[1] += move[1];
             etap = 0;
             break;

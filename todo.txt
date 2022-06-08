@@ -1,0 +1,24 @@
+WS send mesage to all clients
+WS ping and pong
+Send new clients current settings
+Pattern value options
+Fix cross hatch getting cut off after conway
+
+Spotify integration
+
+The Office style bouncing dvd
+Albuma art pallate?
+Gif support
+
+Live values:
+speed: no
+scale: yes
+
+Prefixs:
+0 = JSON update
+1 = Image data
+
+Texts:
+Weather
+News ticker
+Quotes
