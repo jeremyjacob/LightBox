@@ -6,7 +6,7 @@ import ReconnectingWebSocket from 'reconnecting-websocket';
 const ip = '192.168.0.120';
 
 let socket = new WebSocket(`ws://${ip}:80`);
-let sse = new EventSource(`//${ip}:80/stream`);
+let sse = new EventSource(`http://${ip}:80/stream`);
 
 export let imageCanvas = writable<Uint8Array>();
 
